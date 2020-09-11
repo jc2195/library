@@ -1,0 +1,2 @@
+# Library
+The goal of this project was to create a simple JavaScript library app, where you can add books, delete books, and toggle whether you have read the book or not. The library is automatically updated using DOM manipulation.

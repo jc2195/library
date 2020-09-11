@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Library</title>
+  </head>
+  <body>
+    <table id="books">
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Pages</th>
+        <th>Read</th>
+        <th>Delete</th>
+      </tr>
+    </table>
+    <button id="new-book">New Book</button>
+    <form id="bookForm" onsubmit="return getFormData()" style="display: none">
+      <label for="formtitle">Title:</label>
+      <input type="text" id="formtitle"><br>
+      <label for="formauthor">Author:</label>
+      <input type="text" id="formauthor"><br>
+      <label for="formpages">Pages:</label>
+      <input type="text" id="formpages"><br>
+      <label for="formread">Have you read this book?:</label>
+      <input type="radio" id="yes" name="formread" value="Yes">
+      <label for="yes">Yes</label>
+      <input type="radio" id="no" name="formread" value="No">
+      <label for="no">No</label><br>
+      <input type="submit" value="Add Book">
+    </form>
+    <script>
+      let myLibrary = [];
+
+      function Book(title, author, pages, read) {
+        this.title = title
+        this.author = author
+        this.pages = pages
+        this.read = read
+        this.info = function() {
+            return `${title} by ${author}, ${pages} pages, ${read}`;
+        }
+      }
+
+      function addBookToLibrary(book) {
+        myLibrary.push(book)
+      }
+
+      function removeBook(index) {
+        myLibrary.splice(index, 1);
+      }
+
+      function changeRead(index) {
+        if (myLibrary[index].read == "Yes") {
+          myLibrary[index].read = "No";
+        }
+        else {
+          myLibrary[index].read = "Yes";
+        }
+      }
+      
+      function displayBooks(books) {
+        let container = document.querySelector('#books');
+        while(container.childNodes.length > 2) {
+          container.removeChild(container.lastChild);
+        }
+        books.forEach(function(book, index) {
+          let row = document.createElement('tr');
+
+          let title = document.createElement('td');
+          title.textContent = book.title;
+          row.appendChild(title);
+
+          let author = document.createElement('td');
+          author.textContent = book.author;
+          row.appendChild(author);
+
+          let pages = document.createElement('td');
+          pages.textContent = book.pages;
+          row.appendChild(pages);
+
+          let read = document.createElement('td');
+          read.textContent = book.read;
+          row.appendChild(read);
+
+          let deleteBook = document.createElement('td');
+          let deleteButton = document.createElement('button');
+          deleteButton.classList.add('delete-book');
+          deleteButton.textContent = "Delete"
+          deleteButton.id = index;
+          deleteButton.addEventListener('click', () => {
+            removeBook(index);
+            displayBooks(myLibrary);
+          });
+          deleteBook.appendChild(deleteButton);
+          row.appendChild(deleteBook);
+
+          let toggleRead = document.createElement('td');
+          let readButton = document.createElement('button');
+          readButton.textContent = "Toggle Read"
+          readButton.id = index;
+          readButton.addEventListener('click', () => {
+            changeRead(index);
+            displayBooks(myLibrary);
+          });
+          toggleRead.appendChild(readButton);
+          row.appendChild(toggleRead);
+
+          container.appendChild(row);
+        });
+      }
+
+      function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+      }
+
+      let newBookButton = document.querySelector('#new-book');
+      newBookButton.addEventListener('click', () => {
+        toggle_visibility("bookForm");
+      });
+
+      function getFormData() {
+        let title = document.getElementById("formtitle").value;
+        let author = document.getElementById("formauthor").value;
+        let pages = document.getElementById("formpages").value;
+        let read = document.querySelector('input[name="formread"]:checked').value;
+        console.log(title);
+        newBook = new Book(title, author, pages, read);
+        addBookToLibrary(newBook);
+        document.getElementById("bookForm").reset();
+        displayBooks(myLibrary);
+        return false;
+      }
+    </script>
+  </body>
+</html>
